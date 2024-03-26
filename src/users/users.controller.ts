@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, BadRequestException, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { NotFoundError } from 'rxjs';
 
 @Controller('users')
 export class UsersController {
@@ -9,26 +10,48 @@ export class UsersController {
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+    try {
+      return this.usersService.create(createUserDto);
+      
+    } catch (error) {
+        throw new BadRequestException("Erro ao criar usuário")
+    }
   }
 
   @Get()
   findAll() {
-    return this.usersService.findAll();
+    try {
+      return this.usersService.findAll();
+    } catch (error) {
+      throw new InternalServerErrorException("Algo ruim aconteceu")
+    }
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+    try {
+      return this.usersService.findOne(id);
+
+    } catch (error) {
+      throw new NotFoundException("Usuário não encontrado")
+    }
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+    try {
+      return this.usersService.update(id, updateUserDto);
+    } catch (error) {
+      throw new BadRequestException("Erro ao atualizar usuário")
+    }
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+    try {
+      return this.usersService.remove(id);
+    } catch (error) {
+      throw new BadRequestException("Erro ao excluir usuário")
+    }
   }
 }
