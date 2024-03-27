@@ -19,5 +19,5 @@ export class User {
   maritalStatus: string;
 
   @OneToMany(() => Address, address => address.user)
-  addresses: Relation<Address>;
+  addresses?: Relation<Address>;
 }

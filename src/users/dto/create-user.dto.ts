@@ -7,5 +7,4 @@ export class CreateUserDto {
     gender: string
     birthDate: Date
     maritalStatus: string
-    addresses: DeepPartial<Address>
 }
