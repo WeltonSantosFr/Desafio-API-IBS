@@ -1,0 +1,9 @@
+<div>
+    <p-toast position="top-center"></p-toast>
+    <form [formGroup]="loginForm" method="post">
+        <p>Admin Login</p>
+        <input type="text" name="email" formControlName="email" ngModel  pInputText placeholder="Email"/>
+        <input type="password" name="password" formControlName="password" ngModel pInputText placeholder="Senha"/>
+        <p-button button (onClick)="onSubmit()">Logar</p-button>
+    </form>
+</div>
