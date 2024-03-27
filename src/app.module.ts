@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
@@ -7,10 +7,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import * as dotenv from 'dotenv'
 import { join } from 'path';
+import { AdminModule } from './admin/admin.module';
+import { AuthMiddleware } from './admin/auth.middleware';
 dotenv.config()
 
 @Module({
-  imports: [UsersModule, AddressModule, TypeOrmModule.forRoot({
+  imports: [UsersModule, AddressModule, AdminModule, TypeOrmModule.forRoot({
     type: "postgres",
     host: 'localhost',
     port: 5432,
@@ -28,6 +30,11 @@ dotenv.config()
 
 
 
-export class AppModule {
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuthMiddleware)
+      .forRoutes('user', 'address')
+  }
   constructor (private dataSource: DataSource) {}
 }

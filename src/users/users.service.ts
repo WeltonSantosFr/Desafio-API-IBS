@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,47 +12,30 @@ export class UsersService {
     private usersRepository: Repository<User>
   ) { }
 
-   create(createUserDto: CreateUserDto) {
-    try {
-      const newUser = this.usersRepository.create(createUserDto)
-      return this.usersRepository.save(newUser)
-      
-    } catch (error) {
-      throw new BadRequestException("Erro ao criar usuário")
-    }
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    const newUser = this.usersRepository.create(createUserDto)
+    return await this.usersRepository.save(newUser)
   }
 
-  findAll() {
-    try {
-      return this.usersRepository.find()
-    } catch (error) {
-      throw new InternalServerErrorException("Algo ruim aconteceu")
-    }
+  async findAll(): Promise<User[]> {
+    return await this.usersRepository.find()
   }
 
-  findOne(id: string) {
-    try {
-      return this.usersRepository.findOne({where:{id}})
-    } catch (error) {
+  async findOne(id: string): Promise<User> {
+    const user = await this.usersRepository.findOne({ where: { id } })
+    if (!user) {
       throw new NotFoundException("Usuário não encontrado")
     }
+    return user
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
-    try {
-      this.usersRepository.update(id, updateUserDto)
-      return this.usersRepository.findOne({where:{id}})
-    } catch (error) {
-      throw new BadRequestException("Erro ao atualizar usuário")
-    }
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+    await this.usersRepository.update(id, updateUserDto)
+    return await this.usersRepository.findOne({ where: { id } })
   }
 
-  remove(id: string) {
-    try {
-      this.usersRepository.delete(id)
-      return {message: "Usuário excluido com sucesso"}
-    } catch (error) {
-      throw new BadRequestException("Erro ao excluir usuário")
-    }
+  async remove(id: string): Promise<{ message: string }> {
+    await this.usersRepository.delete(id)
+    return { message: "Usuário excluido com sucesso" }
   }
 }
