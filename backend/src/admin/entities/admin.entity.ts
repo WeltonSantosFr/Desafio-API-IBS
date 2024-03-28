@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 
 @Entity()
@@ -22,5 +22,8 @@ export class Admin {
     phone: string;
 
     @CreateDateColumn()
-    createdAt: Date;
+    createdAt: Date
+
+    @UpdateDateColumn()
+    updatedAt: Date
 }

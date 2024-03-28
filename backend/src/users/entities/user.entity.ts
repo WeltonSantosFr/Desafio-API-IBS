@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, Relation } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, Relation, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { Address } from '../../address/entities/address.entity';
 
 @Entity()
@@ -17,6 +17,12 @@ export class User {
 
   @Column()
   maritalStatus: string;
+
+  @CreateDateColumn()
+  createdAt: Date
+
+  @UpdateDateColumn()
+  updatedAt: Date
 
   @OneToMany(() => Address, address => address.user)
   addresses?: Relation<Address>;

@@ -35,6 +35,7 @@ export class AppModule implements NestModule {
     consumer
       .apply(AuthMiddleware)
       .forRoutes('user', 'address')
+
   }
   constructor (private dataSource: DataSource) {}
 }
