@@ -1,0 +1,9 @@
+<form [formGroup]="createUserForm" method="post">
+    <input type="text" name="name" formControlName="name" ngModel pInputText placeholder="Nome" />
+    <input type="text" name="gender" formControlName="gender" ngModel pInputText placeholder="Gênero" />
+    <input type="text" name="birthDate" formControlName="birthDate" ngModel pInputText
+        placeholder="Data de Nascimento" />
+    <input type="text" name="maritalStatus" formControlName="maritalStatus" ngModel pInputText
+        placeholder="Estado Civil" />
+    <p-button label="Criar" (onClick)="onSubmit()"></p-button>
+</form>

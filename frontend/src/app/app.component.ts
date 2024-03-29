@@ -1,18 +1,28 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { FilterMatchMode, PrimeNGConfig } from 'primeng/api';
+import { FilterMatchMode, MessageService, PrimeNGConfig } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, ToastModule],
+  providers: [MessageService],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent {
   title = 'frontend';
 
-  constructor(private primengConfig: PrimeNGConfig) { }
+  constructor(private primengConfig: PrimeNGConfig, private messageService: MessageService) { }
+
+  showSuccessToast(message: string) {
+    this.messageService.add({ severity: 'success', summary: 'Success', detail: message });
+  }
+
+  showErrorToast(message: string) {
+    this.messageService.add({ severity: 'error', summary: 'Error', detail: message });
+  }
 
   ngOnInit() {
     this.primengConfig.ripple = true

@@ -34,9 +34,9 @@ export class DashboardComponent {
     this.totalUsers = 0
     this.totalAddress = 0
     this.items = [
-      { label: 'Home', icon: 'pi pi-home', routerLink: ['/dashboard'] },
-      { label: 'Users', icon: 'pi pi-users', routerLink: ['/user'] },
-      { label: 'Address', icon: 'pi pi-building', routerLink: ['/address'] },
+      { label: 'Dashboard', icon: 'pi pi-home', routerLink: ['/dashboard'] },
+      { label: 'Usuarios', icon: 'pi pi-users', routerLink: ['/users'] },
+      { label: 'Endereços', icon: 'pi pi-building', routerLink: ['/address'] },
       { label: 'Sair', icon: 'pi pi-key', routerLink: ['/logoff'] }
     ]
     this.activeItem = this.items[0];
@@ -80,11 +80,22 @@ export class DashboardComponent {
       const monthYear = `${createdAt.getMonth() + 1}/${createdAt.getFullYear()}`;
       userDataByMonth[monthYear] = (userDataByMonth[monthYear] || 0) + 1;
     });
+
+    const sortedKeys = Object.keys(userDataByMonth).sort((a, b) => {
+      const [aMonth, aYear] = a.split('/').map(Number);
+      const [bMonth, bYear] = b.split('/').map(Number);
+      if (aYear === bYear) {
+          return aMonth - bMonth;
+      } else {
+          return aYear - bYear;
+      }
+  });
+
     return {
-      labels: Object.keys(userDataByMonth),
+      labels: sortedKeys,
       datasets: [{
         label: 'Usuários Cadastrados por Mês',
-        data: Object.values(userDataByMonth)
+        data: sortedKeys.map(key => userDataByMonth[key])
       }]
     };
   }
@@ -96,6 +107,9 @@ export class DashboardComponent {
       const monthYear = `${createdAt.getMonth() + 1}/${createdAt.getFullYear()}`;
       addressDataByMonth[monthYear] = (addressDataByMonth[monthYear] || 0) + 1;
     });
+
+    
+
     return {
       labels: Object.keys(addressDataByMonth),
       datasets: [{
