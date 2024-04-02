@@ -19,13 +19,13 @@ import { UsersComponent } from '../users/users.component';
 })
 export class EditUserModalComponent {
   user: any;
-  
+
 
   constructor(
-    private http: HttpClient, 
-    private ref: DynamicDialogRef, 
-    public config: DynamicDialogConfig, 
-    private toastService: ToastService, 
+    private http: HttpClient,
+    private ref: DynamicDialogRef,
+    public config: DynamicDialogConfig,
+    private toastService: ToastService,
     private fb: FormBuilder,
     private usersService: UsersComponent) {
     this.user = this.config.data.user;
@@ -39,11 +39,12 @@ export class EditUserModalComponent {
   })
 
   ngOnInit(): void {
+    console.log(this.user)
     this.editUserForm = this.fb.group({
-      name: [this.user.name],
-      gender: [this.user.gender],
-      birthDate: [this.user.birthDate],
-      maritalStatus: [this.user.maritalStatus]
+      name: [''],
+      gender: [''],
+      birthDate: [''],
+      maritalStatus: ['']
     });
   }
 
@@ -55,11 +56,16 @@ export class EditUserModalComponent {
   onSubmit() {
     const formData: any = { ...this.editUserForm.value };
 
+
     Object.keys(formData).forEach(key => {
-      if (formData[key] === '' || formData[key] === null || formData[key] === undefined) {
+      if (formData[key] === '' || formData[key] === null || formData[key] === undefined || formData[key].trim() === '') {
         delete formData[key];
       }
     });
+
+    if (Object.keys(formData).length === 0) {
+      return;
+    }
 
     this.http.patch<any>(`http://localhost:3001/user/${this.user.id}`, formData, { headers: this.headers })
       .subscribe({
