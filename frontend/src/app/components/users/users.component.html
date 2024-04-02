@@ -10,16 +10,28 @@
         <p-tabMenu [model]="items" [activeItem]="activeItem"></p-tabMenu>
     </div>
     <div class="content">
-        <p-table [value]="users" [paginator]="true" [rows]="20" [showCurrentPageReport]="true"
-            [tableStyle]="{ 'min-width': '50rem' }"
-            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-            [rowsPerPageOptions]="[5, 10, 20]">
+        <p-table #dt1 [value]="users" [paginator]="true" [rows]="20" [showCurrentPageReport]="true"
+            [tableStyle]="{ 'min-width': '50rem' }" [rowsPerPageOptions]="[10, 20, 50]"
+            [globalFilterFields]="['name', 'gender', 'maritalStatus']">
+            <ng-template pTemplate="caption">
+                <div class="searchDiv">
+                    <p-button type="button" icon="pi pi-plus" label="Criar Usuário" styleClass="p-button-text"
+                        (click)="createUser()"></p-button>
+                    <span class="p-input-icon-left ml-auto">
+                        <i class="pi pi-search"></i>
+                        <input type="text" ngModel pInputText
+                            (input)="dt1.filterGlobal($any($event.target).value , 'contains')"
+                            placeholder="Search keyword" />
+                    </span>
+                </div>
+            </ng-template>
             <ng-template pTemplate="header">
                 <tr>
-                    <th>Nome</th>
-                    <th>Gênero</th>
-                    <th>Data de Nascimento</th>
-                    <th>Estado Civil</th>
+                    <th pSortableColumn="name">Nome <p-sortIcon field="name"></p-sortIcon></th>
+                    <th pSortableColumn="gender">Gênero <p-sortIcon field="gender"></p-sortIcon></th>
+                    <th pSortableColumn="birthDate">Data de Nascimento <p-sortIcon field="birthDate"></p-sortIcon></th>
+                    <th pSortableColumn="maritalStatus">Estado Civil <p-sortIcon field="maritalStatus"></p-sortIcon>
+                    </th>
                     <th>Gerenciar</th>
                 </tr>
             </ng-template>
@@ -30,17 +42,15 @@
                     <td>{{ users.birthDate }}</td>
                     <td>{{ users.maritalStatus }}</td>
                     <td class="manage-buttons">
-                        <p-button type="button" size="small" icon="pi pi-user-edit" (click)="editUser(users)"></p-button>
-                        <p-button type="button" size="small" icon="pi pi-trash" severity="danger" (click)="deleteUserConfirmation(users.id)"></p-button>
+                        <p-button type="button" size="small" icon="pi pi-user-edit"
+                            (click)="editUser(users)"></p-button>
+                        <p-button type="button" size="small" icon="pi pi-trash" severity="danger"
+                            (click)="deleteUserConfirmation(users.id)"></p-button>
                     </td>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="paginatorleft">
-                <p-button type="button" icon="pi pi-plus" label="Criar Usuário" styleClass="p-button-text"
-                    (click)="createUser()"></p-button>
-            </ng-template>
-            <ng-template pTemplate="paginatorright">
-            </ng-template>
+            
+
         </p-table>
     </div>
 </div>

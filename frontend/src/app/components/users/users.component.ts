@@ -9,11 +9,13 @@ import { CreateUserModalComponent } from '../create-user-modal/create-user-modal
 import { EditUserModalComponent } from '../edit-user-modal/edit-user-modal.component';
 import { ToastService } from '../../services/toast.service';
 import { DialogModule } from 'primeng/dialog'
+import { Table } from 'primeng/table';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [TabMenuModule, TableModule, ButtonModule, DialogModule],
+  imports: [TabMenuModule, TableModule, ButtonModule, DialogModule, InputTextModule],
   providers: [DialogService],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css'
@@ -53,10 +55,10 @@ export class UsersComponent {
       })
   }
 
-  editUser(user:any) {
+  editUser(user: any) {
     const ref = this.dialogService.open(EditUserModalComponent, {
       data: {
-        user:user
+        user: user
       },
       header: 'Editar Usuário',
       width: 'fit-content',
@@ -70,7 +72,7 @@ export class UsersComponent {
   }
 
   confirmDelete() {
-    this.http.delete<any>(`http://localhost:3001/user/${this.userToDeleteId}`, {headers:this.headers})
+    this.http.delete<any>(`http://localhost:3001/user/${this.userToDeleteId}`, { headers: this.headers })
       .subscribe({
         next: () => {
           this.toastService.showSuccess("Usuário excluído com sucesso!");
@@ -88,14 +90,18 @@ export class UsersComponent {
   }
 
   createUser() {
-    const ref = this.dialogService.open(CreateUserModalComponent, {
+    this.dialogService.open(CreateUserModalComponent, {
       header: 'Adicionar Usuário',
       width: 'fit-content',
       contentStyle: { "max-height": "500px", "overflow": "auto" }
-    });    
+    });
   }
 
   ngOnInit() {
     this.getAllUsers()
+  }
+
+  clear(table: Table) {
+    table.clear();
   }
 }
