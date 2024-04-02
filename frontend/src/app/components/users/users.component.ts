@@ -4,14 +4,16 @@ import { TabMenuModule } from 'primeng/tabmenu';
 import { TableModule } from 'primeng/table';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ButtonModule } from 'primeng/button'
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DialogService } from 'primeng/dynamicdialog';
 import { CreateUserModalComponent } from '../create-user-modal/create-user-modal.component';
-
+import { EditUserModalComponent } from '../edit-user-modal/edit-user-modal.component';
+import { ToastService } from '../../services/toast.service';
+import { DialogModule } from 'primeng/dialog'
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [TabMenuModule, TableModule, ButtonModule],
+  imports: [TabMenuModule, TableModule, ButtonModule, DialogModule],
   providers: [DialogService],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css'
@@ -20,8 +22,10 @@ export class UsersComponent {
   items: MenuItem[]
   activeItem: MenuItem
   users: any
+  confirmationDialogVisible: boolean = false;
+  userToDeleteId: string;
 
-  constructor(private http: HttpClient, private dialogService: DialogService) {
+  constructor(private http: HttpClient, private dialogService: DialogService, private toastService: ToastService) {
     this.items = [
       { label: 'Dashboard', icon: 'pi pi-home', routerLink: ['/dashboard'] },
       { label: 'Usuarios', icon: 'pi pi-users', routerLink: ['/users'] },
@@ -29,6 +33,7 @@ export class UsersComponent {
       { label: 'Sair', icon: 'pi pi-key', routerLink: ['/logoff'] }
     ]
     this.activeItem = this.items[0];
+    this.userToDeleteId = ''
   }
 
   headers = new HttpHeaders({
@@ -48,17 +53,46 @@ export class UsersComponent {
       })
   }
 
-  openUserModal() {
-    const ref = this.dialogService.open(CreateUserModalComponent, {
-      header: 'Adicionar Novo Usuário',
+  editUser(user:any) {
+    const ref = this.dialogService.open(EditUserModalComponent, {
+      data: {
+        user:user
+      },
+      header: 'Editar Usuário',
       width: 'fit-content',
       contentStyle: { "max-height": "500px", "overflow": "auto" }
     });
+  }
 
-    // Se desejar, você pode adicionar lógica para lidar com o resultado do modal
-    ref.onClose.subscribe((result) => {
-      console.log(result)
-    });
+  deleteUserConfirmation(id: string) {
+    this.userToDeleteId = id;
+    this.confirmationDialogVisible = true;
+  }
+
+  confirmDelete() {
+    this.http.delete<any>(`http://localhost:3001/user/${this.userToDeleteId}`, {headers:this.headers})
+      .subscribe({
+        next: () => {
+          this.toastService.showSuccess("Usuário excluído com sucesso!");
+          this.confirmationDialogVisible = false;
+          this.getAllUsers()
+        },
+        error: () => {
+          this.toastService.showError("Falha ao excluir usuário. Tente novamente mais tarde.");
+        }
+      });
+  }
+
+  cancelDelete() {
+    this.confirmationDialogVisible = false;
+  }
+
+  createUser() {
+    const ref = this.dialogService.open(CreateUserModalComponent, {
+      header: 'Adicionar Usuário',
+      width: 'fit-content',
+      contentStyle: { "max-height": "500px", "overflow": "auto" }
+    });    
   }
 
   ngOnInit() {

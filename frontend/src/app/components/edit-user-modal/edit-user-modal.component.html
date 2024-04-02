@@ -1,7 +1,7 @@
-<form [formGroup]="createUserForm" method="post">
+<form [formGroup]="editUserForm" method="post">
     <input type="text" name="name" formControlName="name" ngModel pInputText placeholder="Nome" />
     <input type="text" name="gender" formControlName="gender" ngModel pInputText placeholder="Gênero" />
     <p-calendar appendTo="body" formControlName="birthDate" dateFormat="dd-mm-yy" placeholder="Data de Nascimento"></p-calendar>
     <input type="text" name="maritalStatus" formControlName="maritalStatus" ngModel pInputText placeholder="Estado Civil" />
-    <p-button label="Criar" (onClick)="onSubmit()"></p-button>
+    <p-button label="Confirmar" (onClick)="onSubmit()"></p-button>
 </form>

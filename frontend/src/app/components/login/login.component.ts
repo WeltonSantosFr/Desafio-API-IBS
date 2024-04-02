@@ -6,6 +6,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
+import { ToastService } from '../../services/toast.service';
 
 interface LoginResponse {
   token: string;
@@ -17,8 +18,8 @@ interface LoginResponse {
   templateUrl: 'login.component.html',
   styleUrl: 'login.component.css',
   standalone: true,
-  imports: [InputTextModule, ButtonModule, ReactiveFormsModule, ToastModule],
-  providers: [ToastModule, MessageService]
+  imports: [InputTextModule, ButtonModule, ReactiveFormsModule],
+  providers: [ToastService]
 })
 
 
@@ -26,7 +27,7 @@ interface LoginResponse {
 
 export class LoginComponent {
   
-  constructor(private http: HttpClient, private messageService: MessageService, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router, private toastService: ToastService) { }
   loginForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', Validators.required)
@@ -43,12 +44,13 @@ export class LoginComponent {
         .subscribe({
           next: (response) => {
             localStorage.setItem("@token", response.token)
+            this.toastService.showSuccess('Logado com Sucesso')
           },
           error: (error) => {
             console.error("Erro ao fazer login:", error)
+            this.toastService.showError('Erro ao fazer login')
           },
           complete: () => {
-            this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Logado com Sucesso' });
             this.router.navigate(['/dashboard'])
           },
         })
