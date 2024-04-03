@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { TabMenuModule } from 'primeng/tabmenu';
 import { TableModule } from 'primeng/table';
@@ -11,6 +11,7 @@ import { ToastService } from '../../services/toast.service';
 import { DialogModule } from 'primeng/dialog'
 import { Table } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-users',
@@ -26,6 +27,7 @@ export class UsersComponent {
   users: any
   confirmationDialogVisible: boolean = false;
   userToDeleteId: string;
+  usersLoaded: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(private http: HttpClient, private dialogService: DialogService, private toastService: ToastService) {
     this.items = [
@@ -43,11 +45,12 @@ export class UsersComponent {
     'Authorization': `bearer ${localStorage.getItem("@token")}`
   })
 
-  getAllUsers(): void {
+   getAllUsers(): any {
     this.http.get<[]>('http://localhost:3001/user', { headers: this.headers })
       .subscribe({
         next: (response) => {
           this.users = response
+          this.usersLoaded.emit(this.users)
         },
         error: (error) => {
           console.error("Error:", error)
@@ -99,9 +102,6 @@ export class UsersComponent {
 
   ngOnInit() {
     this.getAllUsers()
-  }
-
-  clear(table: Table) {
-    table.clear();
+    
   }
 }

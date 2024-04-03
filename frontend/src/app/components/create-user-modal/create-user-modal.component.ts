@@ -44,9 +44,7 @@ export class CreateUserModalComponent {
       if (userData.birthDate) {
         const birthDateUTC = new Date(userData.birthDate );
         birthDateUTC.setHours(0,0,0,0,)
-        console.log(birthDateUTC)
         const birthDate = new Date(birthDateUTC.getTime() + birthDateUTC.getTimezoneOffset() * 60000);
-        console.log(birthDate)
         const currentDate = new Date();
         const nextBirthday = new Date();
         nextBirthday.setFullYear(nextBirthday.getFullYear() + 1, birthDate.getMonth(), birthDate.getDate());

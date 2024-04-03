@@ -1,0 +1,13 @@
+<form [formGroup]="createAddressForm" method="post">
+
+    <p-inputMask mask="99999-999" formControlName="cep" placeholder="Cep"></p-inputMask>
+    <input type="text" name="address" formControlName="address" pInputText placeholder="Endereço" />
+    <input type="text" name="number" formControlName="number" pInputText placeholder="Numero" />
+    <input type="text" name="complement" formControlName="complement" pInputText placeholder="Complemento" />
+    <input type="text" name="district" formControlName="district" pInputText placeholder="Bairro" />
+    <input type="text" name="state" formControlName="state" pInputText placeholder="Estado" />
+    <input type="text" name="city" formControlName="city" pInputText placeholder="Cidade" />
+    <p-listbox [options]="users" [filter]="true" formControlName="user" optionLabel="name" [style]="{ width: '15rem' }"
+        [listStyle]="{'max-height': '220px'}"></p-listbox>
+    <p-button label="Criar" (onClick)="onSubmit()"></p-button>
+</form>

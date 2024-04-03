@@ -39,7 +39,6 @@ export class EditUserModalComponent {
   })
 
   ngOnInit(): void {
-    console.log(this.user)
     this.editUserForm = this.fb.group({
       name: [''],
       gender: [''],

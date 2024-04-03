@@ -1,0 +1,64 @@
+<p-dialog header="Confirmação de Exclusão" [(visible)]="confirmationDialogVisible" [modal]="true" [closable]="false">
+    <p>Tem certeza de que deseja excluir este endereço?</p>
+    <p-footer>
+        <p-button type="button" severity="danger" icon="pi pi-check" (click)="confirmDelete()" label="Sim"></p-button>
+        <p-button type="button" icon="pi pi-times" (click)="cancelDelete()" label="Não"></p-button>
+    </p-footer>
+</p-dialog>
+<div class="dashboard-container">
+    <div class="menu">
+        <p-tabMenu [model]="items" [activeItem]="activeItem"></p-tabMenu>
+    </div>
+    <div class="content">
+        <p-table #dt1 [value]="address" [paginator]="true" [rows]="20" [showCurrentPageReport]="true"
+            [tableStyle]="{ 'min-width': '50rem' }" [rowsPerPageOptions]="[10, 20, 50]"
+            [globalFilterFields]="['cep', 'address', 'number', 'disctrict', 'complement' , 'state', 'city']">
+            <ng-template pTemplate="caption">
+                <div class="searchDiv">
+                    <p-button type="button" icon="pi pi-plus" label="Criar Endereço" styleClass="p-button-text"
+                        (click)="createAddress()"></p-button>
+                    <span class="p-input-icon-left ml-auto">
+                        <i class="pi pi-search"></i>
+                        <input type="text" ngModel pInputText
+                            (input)="dt1.filterGlobal($any($event.target).value , 'contains')"
+                            placeholder="Search keyword" />
+                    </span>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="cep">Cep <p-sortIcon field="cep"></p-sortIcon></th>
+                    <th pSortableColumn="address">Endereço <p-sortIcon field="address"></p-sortIcon></th>
+                    <th pSortableColumn="number">Numero<p-sortIcon field="number"></p-sortIcon></th>
+                    <th pSortableColumn="complement">Complemento<p-sortIcon field="complement"></p-sortIcon></th>
+                    <th pSortableColumn="district">Bairro<p-sortIcon field="district"></p-sortIcon>
+                    <th pSortableColumn="state">Estado<p-sortIcon field="state"></p-sortIcon>
+                    <th pSortableColumn="city">Cidade<p-sortIcon field="city"></p-sortIcon>
+                    <th pSortableColumn="user">Usuário<p-sortIcon field="user"></p-sortIcon>
+                    </th>
+                    <th>Gerenciar</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-address>
+                <tr>
+                    <td>{{ address.cep }}</td>
+                    <td>{{ address.address }}</td>
+                    <td>{{ address.number }}</td>
+                    <td>{{ address.complement }}</td>
+                    <td>{{ address.district }}</td>
+                    <td>{{ address.state }}</td>
+                    <td>{{ address.city }}</td>
+                    <td>{{ address.user }}</td>
+                    <td class="manage-buttons">
+                        <p-button type="button" size="small" icon="pi pi-user-edit"
+                            (click)="editAddress(address)"></p-button>
+                        <p-button type="button" size="small" icon="pi pi-trash" severity="danger"
+                            (click)="deleteAddressConfirmation(address.id)"></p-button>
+                    </td>
+                </tr>
+            </ng-template>
+            
+
+        </p-table>
+    </div>
+</div>
