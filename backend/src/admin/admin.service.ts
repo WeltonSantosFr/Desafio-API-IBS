@@ -18,13 +18,11 @@ export class AdminService {
   async login(loginAdminDto: LoginAdminDto): Promise<{token:string}> {
     const admin = await this.adminsRepository.findOne({where: {email:loginAdminDto.email}})
     if(!admin) {
-      console.log("nao encontrou o admin")
       throw new UnauthorizedException('Credenciais inválidas');
     }
 
     const isValidPassword = await bcrypt.compare(loginAdminDto.password, admin.password)
     if(!isValidPassword) {
-      console.log("nao validou a senha")
       throw new UnauthorizedException('Credenciais inválidas');
     }
 

@@ -33,7 +33,7 @@ export class Address {
   @UpdateDateColumn()
   updatedAt: Date
 
-  @ManyToOne(() => User, user => user.addresses)
+  @ManyToOne(() => User, user => user.addresses, {eager:true})
   user: Relation<User>;
 
 }

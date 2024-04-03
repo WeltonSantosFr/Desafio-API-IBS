@@ -59,7 +59,7 @@ export class UsersComponent {
   }
 
   editUser(user: any) {
-    const ref = this.dialogService.open(EditUserModalComponent, {
+    this.dialogService.open(EditUserModalComponent, {
       data: {
         user: user
       },

@@ -64,7 +64,7 @@ export class AddressComponent {
   }
 
   editAddress(address: any) {
-    const ref = this.dialogService.open(EditAddressModalComponent, {
+    this.dialogService.open(EditAddressModalComponent, {
       data: {
         address: address
       },
