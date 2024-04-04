@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
@@ -34,7 +34,9 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthMiddleware)
-      .forRoutes('user', 'address')
+      .exclude({path: 'admin/login', method: RequestMethod.POST})
+      .exclude({path: 'admin/', method: RequestMethod.POST})
+      .forRoutes('user', 'address', 'admin')
 
   }
   constructor (private dataSource: DataSource) {}
