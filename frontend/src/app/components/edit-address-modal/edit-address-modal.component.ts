@@ -65,6 +65,7 @@ export class EditAddressModalComponent {
       });
       console.log(formData)
       if (Object.keys(formData).length === 0) {
+        this.toastService.showError("Falha ao editar endereço. Verifique os dados e tente novamente.")
         return;
       }
       if (formData.user) {
@@ -72,13 +73,13 @@ export class EditAddressModalComponent {
       }
       this.http.patch(`http://localhost:3001/address/${this.address.id}`, formData, { headers: this.headers }).subscribe({
         next: () => {
-          this.toastService.showSuccess("Endereço criado com sucesso!")
+          this.toastService.showSuccess("Endereço editado com sucesso!")
           this.addressService.getAllAddress()
           this.ref.close();
         },
         error: (error) => {
           console.error("Erro ao criar usuario", error)
-          this.toastService.showError("Falha ao criar endereço. Verifique os dados e tente novamente.")
+          this.toastService.showError("Falha ao editar endereço. Verifique os dados e tente novamente.")
         }
       })
     }

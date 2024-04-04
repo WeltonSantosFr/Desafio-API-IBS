@@ -78,6 +78,8 @@ export class CreateAddressModalComponent {
           this.toastService.showError("Falha ao criar endereço. Verifique os dados e tente novamente.")
         }
       })
+    } else {
+      this.toastService.showError("Falha ao criar endereço. Verifique os dados e tente novamente.")
     }
   }
 

@@ -83,6 +83,8 @@ export class CreateUserModalComponent {
       else {
         this.toastService.showError("Falha ao criar usuário. Verifique os dados e tente novamente.")
       }
+    } else {
+      this.toastService.showError("Falha ao criar usuário. Verifique os dados e tente novamente.")
     }
   }
 

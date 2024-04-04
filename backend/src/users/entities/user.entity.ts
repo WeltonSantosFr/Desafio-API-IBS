@@ -24,6 +24,6 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date
 
-  @OneToMany(() => Address, address => address.user)
-  addresses?: Relation<Address>;
+  @OneToMany(() => Address, address => address.user, {cascade:true})
+  addresses?: Relation<Address[]>;
 }

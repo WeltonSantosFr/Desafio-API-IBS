@@ -7,6 +7,7 @@ import { AddressComponent } from './components/address/address.component';
 
 export const routes: Routes = [
     {path: "", component:LoginComponent,},
+    {path: "login", component:LoginComponent,},
     {path: "dashboard", component:DashboardComponent},
     {path: "users", component:UsersComponent},
     {path: "address", component:AddressComponent}

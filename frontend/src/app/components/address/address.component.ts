@@ -31,7 +31,7 @@ export class AddressComponent {
       { label: 'Dashboard', icon: 'pi pi-home', routerLink: ['/dashboard'] },
       { label: 'Usuarios', icon: 'pi pi-users', routerLink: ['/users'] },
       { label: 'Endereços', icon: 'pi pi-building', routerLink: ['/address'] },
-      { label: 'Sair', icon: 'pi pi-key', routerLink: ['/logoff'] }
+      { label: 'Sair', icon: 'pi pi-key', routerLink: ['/login'] }
     ]
     this.activeItem = this.items[0];
     this.addressToDeleteId = ''

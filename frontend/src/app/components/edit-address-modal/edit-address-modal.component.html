@@ -9,5 +9,5 @@
     <input type="text" name="city" formControlName="city" pInputText placeholder="Cidade" />
     <p-autoComplete formControlName="user" [suggestions]="filteredUsers" (completeMethod)="filterUser($event)"
         field="name" placeholder="Usuário"></p-autoComplete>
-    <p-button label="Criar" (onClick)="onSubmit()"></p-button>
+    <p-button label="Confirmar" (onClick)="onSubmit()"></p-button>
 </form>

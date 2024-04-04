@@ -53,6 +53,9 @@ export class EditUserModalComponent {
   })
 
   onSubmit() {
+    if(this.editUserForm.valid) {
+
+    
     const formData: any = { ...this.editUserForm.value };
 
 
@@ -63,6 +66,7 @@ export class EditUserModalComponent {
     });
 
     if (Object.keys(formData).length === 0) {
+      this.toastService.showError("Falha ao editar usuário. Verifique os dados e tente novamente.")
       return;
     }
 
@@ -77,7 +81,7 @@ export class EditUserModalComponent {
           this.toastService.showError("Falha ao editar usuário. Verifique os dados e tente novamente.")
         },
       })
-
+    }
   }
 
   birthDateValidator(control: any) {
