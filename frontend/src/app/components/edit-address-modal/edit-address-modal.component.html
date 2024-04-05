@@ -1,13 +1,13 @@
 <form [formGroup]="editAddressForm" method="post">
     <p-autoComplete [maxlength]="8" formControlName="cep" [suggestions]="filteredCeps" (completeMethod)="filterCep($event)"
-    (onSelect)="onSelectCep($event)" field="cep" placeholder="Cep" ></p-autoComplete>
+    (onSelect)="onSelectCep($event)" field="localidade" placeholder="Cep" ></p-autoComplete>
     <input type="text" name="address" formControlName="address" pInputText placeholder="Endereço" />
     <input type="text" name="number" formControlName="number" pInputText placeholder="Numero" />
     <input type="text" name="complement" formControlName="complement" pInputText placeholder="Complemento" />
     <input type="text" name="district" formControlName="district" pInputText placeholder="Bairro" />
     <input type="text" name="state" formControlName="state" pInputText placeholder="Estado" />
     <input type="text" name="city" formControlName="city" pInputText placeholder="Cidade" />
-    <p-autoComplete formControlName="user" [suggestions]="filteredUsers" (completeMethod)="filterUser($event)"
-        field="name" placeholder="Usuário"></p-autoComplete>
+    <p-dropdown formControlName="user" [options]="users" optionLabel="name" optionValue="id" [editable]="true"
+        [virtualScroll]="true" [virtualScrollItemSize]="38" placeholder="Usuário"></p-dropdown>
     <p-button label="Confirmar" (onClick)="onSubmit()"></p-button>
 </form>

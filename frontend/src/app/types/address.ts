@@ -26,6 +26,18 @@ export interface CreateAddressFormData {
     [key: string]: string | null| undefined;
 }
 
+export interface EditAddressFormData {
+    cep?: string | null;
+    address?: string | null;
+    number?: string | null;
+    complement?: string | null;
+    district?: string | null;
+    state?:string | null;
+    city?:string | null;
+    user?:string | null;
+    [key: string]: string | null | undefined;
+}
+
 export interface Cep {
     cep:string
     logradouro:string

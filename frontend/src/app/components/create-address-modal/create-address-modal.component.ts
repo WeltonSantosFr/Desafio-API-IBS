@@ -14,11 +14,12 @@ import { AutoCompleteCompleteEvent, AutoCompleteModule, AutoCompleteSelectEvent 
 import { DropdownModule } from 'primeng/dropdown';
 import { Cep, CreateAddressFormData } from '../../types/address';
 import { User } from '../../types/user';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-create-address-modal',
   standalone: true,
-  imports: [ButtonModule, InputTextModule, ReactiveFormsModule, ListboxModule, InputMaskModule, AutoCompleteModule, DropdownModule],
+  imports: [ButtonModule, InputTextModule, ReactiveFormsModule, ListboxModule, InputMaskModule, AutoCompleteModule, DropdownModule, CommonModule],
   providers: [ToastService, UsersComponent],
   templateUrl: './create-address-modal.component.html',
   styleUrl: './create-address-modal.component.css'

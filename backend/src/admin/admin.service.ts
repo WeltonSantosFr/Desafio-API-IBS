@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { Repository } from 'typeorm';
@@ -31,6 +31,9 @@ export class AdminService {
   }
 
   async create(createAdminDto: CreateAdminDto): Promise<Admin> {
+    if (!createAdminDto.fullName || !createAdminDto.email || !createAdminDto.jobTitle|| !createAdminDto.password || !createAdminDto.phone) {
+      throw new BadRequestException()
+    }
     const newAdmin = this.adminsRepository.create({...createAdminDto, password: bcrypt.hashSync(createAdminDto.password, 10)})
     return await this.adminsRepository.save(newAdmin)
   }
@@ -40,15 +43,30 @@ export class AdminService {
   }
 
   async findOne(id: string): Promise<Admin> {
+    const admin = await this.adminsRepository.findOne({ where: { id } })
+    if (!admin) {
+      throw new NotFoundException("Usuário não encontrado")
+    }
     return await this.adminsRepository.findOne({ where: { id } })
   }
 
   async update(id: string, updateAdminDto: UpdateAdminDto): Promise<Admin> {
+    const admin = await this.adminsRepository.findOne({ where: { id } })
+    if (!admin) {
+      throw new NotFoundException("Usuário não encontrado")
+    }
+    if (Object.keys(updateAdminDto).length === 0) {
+      throw new BadRequestException("Nenhum campo para atualização fornecido");
+    }
     await this.adminsRepository.update(id, updateAdminDto)
     return await this.adminsRepository.findOne({ where: { id } })
   }
 
   async remove(id: string): Promise<{message:string}> {
+    const admin = await this.adminsRepository.findOne({ where: { id } })
+    if (!admin) {
+      throw new NotFoundException("Usuário não encontrado")
+    }
     await this.adminsRepository.delete(id)
     return {message: "Admin excluido com sucesso"}
   }

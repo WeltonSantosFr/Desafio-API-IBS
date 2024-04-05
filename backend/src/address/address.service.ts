@@ -39,11 +39,22 @@ export class AddressService {
   }
 
   async update(id: string, updateAddressDto: UpdateAddressDto): Promise<Address> {
+    const address = await this.addressRepository.findOne({ where: { id } })
+    if (!address) {
+      throw new NotFoundException("Endereço não encontrado")
+    }
+    if (Object.keys(updateAddressDto).length === 0) {
+      throw new BadRequestException("Nenhum campo para atualização fornecido");
+    }
     await this.addressRepository.update(id, updateAddressDto)
     return await this.addressRepository.findOne({ where: { id } })
   }
 
   async remove(id: string): Promise<{ message: string }> {
+    const address = await this.addressRepository.findOne({ where: { id } })
+    if (!address) {
+      throw new NotFoundException("Endereço não encontrado")
+    }
     await this.addressRepository.delete(id)
     return { message: "Endereço excluido com sucesso" }
   }

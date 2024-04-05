@@ -10,22 +10,24 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ListboxModule } from 'primeng/listbox';
 import { InputMaskModule } from 'primeng/inputmask';
-import { AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
+import { AutoCompleteCompleteEvent, AutoCompleteModule, AutoCompleteSelectEvent } from 'primeng/autocomplete';
+import { User } from '../../types/user';
+import { Address, Cep, EditAddressFormData } from '../../types/address';
+import { DropdownModule } from 'primeng/dropdown';
 
 @Component({
   selector: 'app-edit-address-modal',
   standalone: true,
-  imports: [ButtonModule, InputTextModule, ReactiveFormsModule, ListboxModule, InputMaskModule, AutoCompleteModule],
+  imports: [ButtonModule, InputTextModule, ReactiveFormsModule, ListboxModule, InputMaskModule, AutoCompleteModule, DropdownModule],
   providers: [ToastService, UsersComponent],
   templateUrl: './edit-address-modal.component.html',
   styleUrl: './edit-address-modal.component.css'
 })
 export class EditAddressModalComponent {
-  users: any[] = []
-  ceps: any[] = []
-  filteredUsers: any[] = [];
-  filteredCeps: any[] = []
-  address: any;
+  users: User[] = []
+  ceps: Cep[] = []
+  filteredCeps: Cep[] = []
+  address: Address;
 
   constructor(
     private http: HttpClient,
@@ -56,20 +58,17 @@ export class EditAddressModalComponent {
 
   onSubmit() {
     if (this.editAddressForm.valid) {
-      const formData: any = this.editAddressForm.value
+      const formData: EditAddressFormData = this.editAddressForm.value
 
       Object.keys(formData).forEach(key => {
         if (formData[key] === '' || formData[key] === null || formData[key] === undefined) {
           delete formData[key];
         }
       });
-      console.log(formData)
+      
       if (Object.keys(formData).length === 0) {
         this.toastService.showError("Falha ao editar endereço. Verifique os dados e tente novamente.")
         return;
-      }
-      if (formData.user) {
-        formData.user = formData.user.id
       }
       this.http.patch(`http://localhost:3001/address/${this.address.id}`, formData, { headers: this.headers }).subscribe({
         next: () => {
@@ -86,11 +85,11 @@ export class EditAddressModalComponent {
   }
 
   filterCep(event: AutoCompleteCompleteEvent) {
-    let filtered: any[] = []
+    let filtered: Cep[] = []
     let query = event.query;
     if (query.length === 8) {
       this.cepService.searchCep(query).subscribe({
-        next: (response: any) => {
+        next: (response: Cep) => {
           this.filteredCeps = [response]
         },
         error: (error) => {
@@ -101,8 +100,7 @@ export class EditAddressModalComponent {
     this.filteredCeps = filtered;
   }
 
-  onSelectCep(event: any) {
-    console.log(event)
+  onSelectCep(event: AutoCompleteSelectEvent) {
     const selectedCep = event.value;
     this.editAddressForm.patchValue({
       cep: selectedCep.cep.replace("-", ""),
@@ -114,16 +112,11 @@ export class EditAddressModalComponent {
     });
   }
 
-  filterUser(event: AutoCompleteCompleteEvent) {
-    let filtered: any[] = []
-    let query = event.query;
-    for (let i = 0; i < (this.users as any[]).length; i++) {
-      let user = (this.users as any[])[i];
-      if (user.name.toLowerCase().indexOf(query.toLowerCase()) == 0) {
-        filtered.push(user);
-      }
-    }
-    console.log(filtered)
-    this.filteredUsers = filtered;
+  ngOnInit() {
+    this.usersService.getAllUsers()
+    this.usersService.usersLoaded.subscribe((users) => {
+      this.users = users;
+    });
+
   }
 }

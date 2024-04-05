@@ -22,7 +22,7 @@ dotenv.config()
     entities: [join(__dirname, '**', "*.entity{.ts,.js}")],
     migrations: [join(__dirname, '**', "migrations/*{.ts,.js}")],
     synchronize: false,
-    autoLoadEntities:true
+    autoLoadEntities: true
   })],
   controllers: [AppController],
   providers: [AppService],
@@ -34,10 +34,10 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthMiddleware)
-      .exclude({path: 'admin/login', method: RequestMethod.POST})
-      .exclude({path: 'admin/new', method: RequestMethod.POST})
-      .forRoutes('user', 'address', 'admin')
+      .exclude({ path: 'admin/login', method: RequestMethod.POST })
+      .exclude({ path: 'admin/new', method: RequestMethod.POST })
+      .forRoutes({ path: 'user*', method: RequestMethod.ALL }, { path: 'address*', method: RequestMethod.ALL }, { path: 'admin', method: RequestMethod.ALL })
 
   }
-  constructor (private dataSource: DataSource) {}
+  constructor(private dataSource: DataSource) { }
 }
