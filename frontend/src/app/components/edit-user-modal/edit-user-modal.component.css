@@ -5,5 +5,9 @@ form {
     justify-content: space-evenly;
     gap: 1rem;
     background-color: var(--surface-0);
+
+    input {
+        min-width: 100%;
+      }
 }
 

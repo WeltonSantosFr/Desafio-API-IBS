@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { InputTextModule } from 'primeng/inputtext';
@@ -7,18 +7,33 @@ import { ToastService } from '../../services/toast.service';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { UsersComponent } from '../users/users.component';
+import { DropdownModule } from 'primeng/dropdown';
+import { EditUserFormData, User } from '../../types/user';
 
 
 @Component({
   selector: 'app-edit-user-modal',
   standalone: true,
-  imports: [ButtonModule, InputTextModule, ReactiveFormsModule, CalendarModule],
+  imports: [ButtonModule, InputTextModule, ReactiveFormsModule, CalendarModule, DropdownModule],
   providers: [ToastService],
   templateUrl: './edit-user-modal.component.html',
   styleUrl: './edit-user-modal.component.css'
 })
 export class EditUserModalComponent {
-  user: any;
+  user: User;
+
+  genderOptions = [
+    { label: 'Masculino', value: 'Masculino' },
+    { label: 'Feminino', value: 'Feminino' }
+  ];
+
+  maritalStatusOptions = [
+    { label: 'Solteiro', value: 'Solteiro' },
+    { label: 'Casado', value: 'Casado' },
+    { label: 'Divorciado', value: 'Divorciado' },
+    { label: 'Viúvo', value: 'Viúvo' }
+  ];
+
 
 
   constructor(
@@ -40,11 +55,18 @@ export class EditUserModalComponent {
 
   ngOnInit(): void {
     this.editUserForm = this.fb.group({
-      name: [''],
-      gender: [''],
-      birthDate: [''],
-      maritalStatus: ['']
-    });
+      name: '',
+      gender: '',
+      birthDate: '',
+      maritalStatus: ''
+    }) as FormGroup & {
+      controls: {
+        name: FormControl
+        gender: FormControl
+        birthDate: FormControl
+        maritalStatus: FormControl
+      }
+    };
   }
 
   headers = new HttpHeaders({
@@ -56,11 +78,11 @@ export class EditUserModalComponent {
     if(this.editUserForm.valid) {
 
     
-    const formData: any = { ...this.editUserForm.value };
+    const formData: EditUserFormData = { ...this.editUserForm.value };
 
 
     Object.keys(formData).forEach(key => {
-      if (formData[key] === '' || formData[key] === null || formData[key] === undefined || formData[key].trim() === '') {
+      if (formData[key] === '' || formData[key] === null || formData[key] === undefined) {
         delete formData[key];
       }
     });
@@ -70,7 +92,7 @@ export class EditUserModalComponent {
       return;
     }
 
-    this.http.patch<any>(`http://localhost:3001/user/${this.user.id}`, formData, { headers: this.headers })
+    this.http.patch<User>(`http://localhost:3001/user/${this.user.id}`, formData, { headers: this.headers })
       .subscribe({
         next: () => {
           this.toastService.showSuccess("Usuário editado com sucesso!")
@@ -84,7 +106,7 @@ export class EditUserModalComponent {
     }
   }
 
-  birthDateValidator(control: any) {
+  birthDateValidator(control: AbstractControl): {[key:string]: boolean} | null {
     const value = control.value;
 
     if (value) {

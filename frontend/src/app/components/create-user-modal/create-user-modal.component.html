@@ -1,7 +1,11 @@
 <form [formGroup]="createUserForm" method="post">
-    <input type="text" name="name" formControlName="name" ngModel pInputText placeholder="Nome" />
-    <input type="text" name="gender" formControlName="gender" ngModel pInputText placeholder="Gênero" />
+    <input name="name" formControlName="name" pInputText placeholder="Nome"/>
+    <p *ngIf="createUserForm.get('name')?.errors?.['required'] && (createUserForm.get('name')?.dirty || createUserForm.get('name')?.touched)" [ngStyle]="{color: 'var(--red-600)'}">Nome é obrigatório</p>
+    <p-dropdown appendTo="body" [options]="genderOptions" formControlName="gender" optionLabel="label" optionValue="value" placeholder="Gênero"></p-dropdown>
+    <p *ngIf="createUserForm.get('gender')?.errors?.['required'] && (createUserForm.get('gender')?.dirty || createUserForm.get('gender')?.touched)" [ngStyle]="{color: 'var(--red-600)'}">Gênero é obrigatório</p>
     <p-calendar appendTo="body" formControlName="birthDate" dateFormat="dd-mm-yy" placeholder="Data de Nascimento"></p-calendar>
-    <input type="text" name="maritalStatus" formControlName="maritalStatus" ngModel pInputText placeholder="Estado Civil" />
+    <p *ngIf="createUserForm.get('birthDate')?.errors?.['required'] && (createUserForm.get('birthDate')?.dirty || createUserForm.get('birthDate')?.touched)" [ngStyle]="{color: 'var(--red-600)'}">Data de Nascimento é obrigatório</p>
+    <p-dropdown appendTo="body" [options]="maritalStatusOptions" formControlName="maritalStatus" optionLabel="label" optionValue="value" placeholder="Estado Civil"></p-dropdown>
+    <p *ngIf="createUserForm.get('maritalStatus')?.errors?.['required'] && (createUserForm.get('maritalStatus')?.dirty || createUserForm.get('maritalStatus')?.touched)" [ngStyle]="{color: 'var(--red-600)'}">Estado Civil é obrigatório</p>
     <p-button label="Criar" (onClick)="onSubmit()"></p-button>
 </form>

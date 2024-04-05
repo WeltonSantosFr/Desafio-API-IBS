@@ -3,10 +3,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { ToastService } from '../../services/toast.service';
+import { CommonModule } from '@angular/common';
 
 interface LoginResponse {
   token: string;
@@ -18,7 +17,7 @@ interface LoginResponse {
   templateUrl: 'login.component.html',
   styleUrl: 'login.component.css',
   standalone: true,
-  imports: [InputTextModule, ButtonModule, ReactiveFormsModule],
+  imports: [InputTextModule, ButtonModule, ReactiveFormsModule, CommonModule],
   providers: [ToastService]
 })
 
@@ -47,8 +46,12 @@ export class LoginComponent {
             this.toastService.showSuccess('Logado com Sucesso')
           },
           error: (error) => {
-            console.error("Erro ao fazer login:", error)
-            this.toastService.showError('Erro ao fazer login')
+            if(error.status === 401) {
+              this.toastService.showError('Credenciais inválidas. Verifique seu email e senha.');
+            }
+            else {
+              this.toastService.showError('Erro ao fazer login. Tente novamente mais tarde.');
+            }
           },
           complete: () => {
             this.router.navigate(['/dashboard'])

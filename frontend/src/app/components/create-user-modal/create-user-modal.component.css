@@ -6,6 +6,6 @@ form {
   background-color: var(--surface-0);
 
   input {
-    width: 100%;
+    min-width: 100%;
   }
 }

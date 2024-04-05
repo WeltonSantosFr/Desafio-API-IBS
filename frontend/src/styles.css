@@ -9,9 +9,19 @@
 
 /* Reset CSS */
 @layer reset {
-    html, body {
+
+    html,
+    body {
         width: 100vw;
         height: 100vh;
         margin: 0;
+    }
+
+    .p-inputwrapper {
+        width: 100%;
+    }
+
+    .p-autocomplete-input {
+        width: 100%;
     }
 }

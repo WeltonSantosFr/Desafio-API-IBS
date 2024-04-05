@@ -1,8 +1,14 @@
 <div>
     <form [formGroup]="loginForm" method="post">
         <p>Admin Login</p>
-        <input type="text" name="email" formControlName="email" ngModel  pInputText placeholder="Email"/>
-        <input type="password" name="password" formControlName="password" ngModel pInputText placeholder="Senha"/>
+        <input type="text" name="email" formControlName="email" ngModel pInputText placeholder="Email" />
+        <p *ngIf="loginForm.get('email')?.errors?.['required'] && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)"
+            [ngStyle]="{color: 'var(--red-600)'}">Email é obrigatório</p>
+        <p *ngIf="loginForm.get('email')?.errors?.['email'] && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)"
+            [ngStyle]="{color: 'var(--red-600)'}">Email inválido</p>
+        <input type="password" name="password" formControlName="password" ngModel pInputText placeholder="Senha" />
+        <p *ngIf="loginForm.get('password')?.errors?.['required'] && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)"
+            [ngStyle]="{color: 'var(--red-600)'}">Senha é obrigatório</p>
         <p-button button (onClick)="onSubmit()">Logar</p-button>
     </form>
 </div>

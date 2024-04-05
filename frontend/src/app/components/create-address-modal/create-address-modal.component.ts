@@ -10,21 +10,23 @@ import { ListboxModule } from 'primeng/listbox';
 import { InputMaskModule } from 'primeng/inputmask';
 import { AddressComponent } from '../address/address.component';
 import { CepService } from '../../services/cep.service';
-import { AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
+import { AutoCompleteCompleteEvent, AutoCompleteModule, AutoCompleteSelectEvent } from 'primeng/autocomplete';
+import { DropdownModule } from 'primeng/dropdown';
+import { Cep, CreateAddressFormData } from '../../types/address';
+import { User } from '../../types/user';
 
 @Component({
   selector: 'app-create-address-modal',
   standalone: true,
-  imports: [ButtonModule, InputTextModule, ReactiveFormsModule, ListboxModule, InputMaskModule, AutoCompleteModule],
+  imports: [ButtonModule, InputTextModule, ReactiveFormsModule, ListboxModule, InputMaskModule, AutoCompleteModule, DropdownModule],
   providers: [ToastService, UsersComponent],
   templateUrl: './create-address-modal.component.html',
   styleUrl: './create-address-modal.component.css'
 })
 export class CreateAddressModalComponent {
-  users: any[] = []
-  ceps: any[] = []
-  filteredUsers: any[] = [];
-  filteredCeps: any[] = []
+  users: User[] = []
+  ceps: Cep[] = []
+  filteredCeps: Cep[] = []
   constructor(
     private http: HttpClient,
     private toastService: ToastService,
@@ -42,7 +44,18 @@ export class CreateAddressModalComponent {
     state: new FormControl('', Validators.required),
     city: new FormControl('', Validators.required),
     user: new FormControl<any | null>(null, Validators.required)
-  })
+  }) as FormGroup & {
+    controls: {
+      cep: FormControl
+      address: FormControl
+      number: FormControl
+      complement: FormControl
+      districy: FormControl
+      state: FormControl
+      city: FormControl
+      user: FormControl
+    }
+  };
 
   headers = new HttpHeaders({
     'Content-Type': 'application/json',
@@ -51,21 +64,14 @@ export class CreateAddressModalComponent {
 
   onSubmit() {
     if (this.createAddressForm.valid) {
-
-
-      const formData: any = this.createAddressForm.value
-
+      const formData: CreateAddressFormData = this.createAddressForm.value
       Object.keys(formData).forEach(key => {
         if (formData[key] === '' || formData[key] === null || formData[key] === undefined) {
           delete formData[key];
         }
       });
-      console.log(formData)
       if (Object.keys(formData).length === 0) {
         return;
-      }
-      if (formData.user) {
-        formData.user = formData.user.id
       }
       this.http.post('http://localhost:3001/address', formData, { headers: this.headers }).subscribe({
         next: () => {
@@ -73,8 +79,7 @@ export class CreateAddressModalComponent {
           this.addressService.getAllAddress()
           this.ref.close();
         },
-        error: (error) => {
-          console.error("Erro ao criar usuario", error)
+        error: () => {
           this.toastService.showError("Falha ao criar endereço. Verifique os dados e tente novamente.")
         }
       })
@@ -83,25 +88,23 @@ export class CreateAddressModalComponent {
     }
   }
 
-  
-
   filterCep(event: AutoCompleteCompleteEvent) {
-    let filtered: any[] = []
+    let filtered: Cep[] = []
     let query = event.query;
-    if(query.length === 8) {
+    if (query.length === 8) {
       this.cepService.searchCep(query).subscribe({
-        next: (response:any) => {
+        next: (response: Cep) => {
           this.filteredCeps = [response]
         },
-        error: (error) => {
-          console.error(error)
+        error: () => {
+          this.toastService.showError("Falha ao buscar cep. Verifique os dados e tente novamente.")
         }
       })
     }
     this.filteredCeps = filtered;
   }
 
-  onSelectCep(event: any) {
+  onSelectCep(event: AutoCompleteSelectEvent) {
     console.log(event)
     const selectedCep = event.value;
     this.createAddressForm.patchValue({
@@ -114,25 +117,12 @@ export class CreateAddressModalComponent {
     });
   }
 
-  filterUser(event: AutoCompleteCompleteEvent) {
-    let filtered: any[] = []
-    let query = event.query;
-    for (let i = 0; i < (this.users as any[]).length; i++) {
-      let user = (this.users as any[])[i];
-      if (user.name.toLowerCase().indexOf(query.toLowerCase()) == 0) {
-        filtered.push(user);
-      }
-    }
-    console.log(filtered)
-    this.filteredUsers = filtered;
-  }
-
   ngOnInit() {
     this.usersService.getAllUsers()
     this.usersService.usersLoaded.subscribe((users) => {
       this.users = users;
     });
-    
+
   }
 
 }

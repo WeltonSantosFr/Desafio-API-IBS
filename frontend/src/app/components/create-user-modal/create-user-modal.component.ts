@@ -1,23 +1,38 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { ToastService } from '../../services/toast.service';
 import { CalendarModule } from 'primeng/calendar';
 import { UsersComponent } from '../users/users.component';
+import { User } from '../../types/user';
+import { DropdownModule } from 'primeng/dropdown';
+import { CommonModule } from '@angular/common';
 
 
 @Component({
   selector: 'app-create-user-modal',
   standalone: true,
-  imports: [ButtonModule, InputTextModule, ReactiveFormsModule, CalendarModule],
+  imports: [ButtonModule, InputTextModule, ReactiveFormsModule, CalendarModule, DropdownModule, CommonModule],
   providers: [ToastService],
   templateUrl: './create-user-modal.component.html',
   styleUrl: './create-user-modal.component.css'
 })
 export class CreateUserModalComponent {
+  genderOptions = [
+    { label: 'Masculino', value: 'Masculino' },
+    { label: 'Feminino', value: 'Feminino' }
+  ];
+
+  maritalStatusOptions = [
+    { label: 'Solteiro', value: 'Solteiro' },
+    { label: 'Casado', value: 'Casado' },
+    { label: 'Divorciado', value: 'Divorciado' },
+    { label: 'Viúvo', value: 'Viúvo' }
+  ];
+
   constructor(
     private http: HttpClient, 
     private toastService: ToastService, 
@@ -50,9 +65,9 @@ export class CreateUserModalComponent {
         nextBirthday.setFullYear(nextBirthday.getFullYear() + 1, birthDate.getMonth(), birthDate.getDate());
         isBirthday = currentDate.getMonth() === birthDate.getMonth() && currentDate.getDate() === birthDate.getDate();
 
-        this.http.post<any>('http://localhost:3001/user', this.createUserForm.value, { headers: this.headers })
+        this.http.post<User>('http://localhost:3001/user', this.createUserForm.value, { headers: this.headers })
           .subscribe({
-            next: (response) => {
+            next: () => {
               this.toastService.showSuccess("Usuário criado com sucesso!")
               this.ref.close();
 
@@ -74,8 +89,7 @@ export class CreateUserModalComponent {
 
               }
             },
-            error: (error) => {
-              console.error("Erro ao criar usuario", error)
+            error: () => {
               this.toastService.showError("Falha ao criar usuário. Verifique os dados e tente novamente.")
             },
           })
@@ -88,7 +102,7 @@ export class CreateUserModalComponent {
     }
   }
 
-  birthDateValidator(control: any) {
+  birthDateValidator(control: AbstractControl): {[key:string]: boolean} | null {
     const value = control.value;
 
     if (value) {

@@ -10,6 +10,7 @@ import { ToastService } from '../../services/toast.service';
 import { DialogService } from 'primeng/dynamicdialog';
 import { CreateAddressModalComponent } from '../create-address-modal/create-address-modal.component';
 import { EditAddressModalComponent } from '../edit-address-modal/edit-address-modal.component';
+import { Address } from '../../types/address';
 
 @Component({
   selector: 'app-address',
@@ -21,9 +22,9 @@ import { EditAddressModalComponent } from '../edit-address-modal/edit-address-mo
 })
 export class AddressComponent {
   items: MenuItem[]
-  activeItem: any
+  activeItem: MenuItem
   addressToDeleteId: string
-  address:any
+  address:Address[] = []
   confirmationDialogVisible: boolean = false;
 
   constructor(private http: HttpClient, private toastService: ToastService, private dialogService: DialogService) {
@@ -44,7 +45,7 @@ export class AddressComponent {
 
 
   getAllAddress(): void {
-    this.http.get<[]>('http://localhost:3001/address', { headers: this.headers })
+    this.http.get<Address[]>('http://localhost:3001/address', { headers: this.headers })
       .subscribe({
         next: (response) => {
           this.address = response
@@ -63,7 +64,7 @@ export class AddressComponent {
     });
   }
 
-  editAddress(address: any) {
+  editAddress(address: Address) {
     this.dialogService.open(EditAddressModalComponent, {
       data: {
         address: address
@@ -80,7 +81,7 @@ export class AddressComponent {
   }
 
   confirmDelete() {
-    this.http.delete<any>(`http://localhost:3001/address/${this.addressToDeleteId}`, { headers: this.headers })
+    this.http.delete<string>(`http://localhost:3001/address/${this.addressToDeleteId}`, { headers: this.headers })
       .subscribe({
         next: () => {
           this.toastService.showSuccess("Endereço excluído com sucesso!");

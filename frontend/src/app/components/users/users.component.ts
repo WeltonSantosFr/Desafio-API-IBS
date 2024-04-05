@@ -9,9 +9,8 @@ import { CreateUserModalComponent } from '../create-user-modal/create-user-modal
 import { EditUserModalComponent } from '../edit-user-modal/edit-user-modal.component';
 import { ToastService } from '../../services/toast.service';
 import { DialogModule } from 'primeng/dialog'
-import { Table } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
-import { Observable } from 'rxjs';
+import { User } from '../../types/user';
 
 @Component({
   selector: 'app-users',
@@ -24,7 +23,7 @@ import { Observable } from 'rxjs';
 export class UsersComponent {
   items: MenuItem[]
   activeItem: MenuItem
-  users: any
+  users: User[] = []
   confirmationDialogVisible: boolean = false;
   userToDeleteId: string;
   usersLoaded: EventEmitter<any> = new EventEmitter<any>();
@@ -45,20 +44,20 @@ export class UsersComponent {
     'Authorization': `bearer ${localStorage.getItem("@token")}`
   })
 
-   getAllUsers(): any {
-    this.http.get<[]>('http://localhost:3001/user', { headers: this.headers })
+   getAllUsers(): void {
+    this.http.get<User[]>('http://localhost:3001/user', { headers: this.headers })
       .subscribe({
         next: (response) => {
           this.users = response
           this.usersLoaded.emit(this.users)
         },
         error: (error) => {
-          console.error("Error:", error)
+          this.toastService.showError("Erro ao adquirir dados sobre usuários")
         },
       })
   }
 
-  editUser(user: any) {
+  editUser(user: User) {
     this.dialogService.open(EditUserModalComponent, {
       data: {
         user: user
@@ -75,7 +74,7 @@ export class UsersComponent {
   }
 
   confirmDelete() {
-    this.http.delete<any>(`http://localhost:3001/user/${this.userToDeleteId}`, { headers: this.headers })
+    this.http.delete<string>(`http://localhost:3001/user/${this.userToDeleteId}`, { headers: this.headers })
       .subscribe({
         next: () => {
           this.toastService.showSuccess("Usuário excluído com sucesso!");
@@ -100,8 +99,17 @@ export class UsersComponent {
     });
   }
 
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    const offset = date.getTimezoneOffset();
+    const localDate = new Date(date.getTime() + (offset * 60 * 1000)); 
+    const day = localDate.getDate().toString().padStart(2, '0');
+    const month = (localDate.getMonth() + 1).toString().padStart(2, '0'); 
+    const year = localDate.getFullYear().toString();
+    return `${day}-${month}-${year}`;
+}
+
   ngOnInit() {
     this.getAllUsers()
-    
   }
 }

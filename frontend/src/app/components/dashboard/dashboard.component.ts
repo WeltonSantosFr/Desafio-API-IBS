@@ -5,14 +5,10 @@ import { CommonModule } from '@angular/common';
 import { MenuItem } from 'primeng/api';
 import { ChartModule } from 'primeng/chart';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-
-interface UserDataByMonth {
-  [key: string]: number;
-}
-
-interface AddressDataByMonth {
-  [key: string]: number;
-}
+import { ToastService } from '../../services/toast.service';
+import { User } from '../../types/user';
+import { AddressDataByMonth, ChartData, UserDataByMonth } from '../../types/chart-data';
+import { Address } from '../../types/address';
 
 @Component({
   selector: 'app-dashboard',
@@ -25,12 +21,12 @@ interface AddressDataByMonth {
 export class DashboardComponent {
   items: MenuItem[]
   activeItem: MenuItem
-  userChartData: any
-  addressChartData: any
+  userChartData: ChartData = {labels: [], datasets: []}
+  addressChartData: ChartData = {labels: [], datasets: []}
   totalUsers: number
   totalAddress: number
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private toastService: ToastService) {
     this.totalUsers = 0
     this.totalAddress = 0
     this.items = [
@@ -48,49 +44,47 @@ export class DashboardComponent {
   })
 
   getTotalUsers(): void {
-    this.http.get<[]>('http://localhost:3001/user', { headers: this.headers })
+    this.http.get<User[]>('http://localhost:3001/user', { headers: this.headers })
       .subscribe({
         next: (response) => {
           this.totalUsers = response.length
           this.userChartData = this.processUserData(response)
         },
-        error: (error) => {
-          console.error("Error:", error)
+        error: () => {
+          this.toastService.showError("Erro ao adquirir dados sobre usuários")
         },
       })
   }
 
   getTotalAddress(): void {
-    this.http.get<[]>('http://localhost:3001/address', { headers: this.headers })
+    this.http.get<Address[]>('http://localhost:3001/address', { headers: this.headers })
       .subscribe({
         next: (response) => {
           this.totalAddress = response.length
           this.addressChartData = this.processAddressData(response)
         },
-        error: (error) => {
-          console.error("Error:", error)
+        error: () => {
+          this.toastService.showError("Erro ao adquirir dados sobre endereços")
         },
       })
   }
 
-  processUserData(users: any[]): any {
+  processUserData(users: User[]) {
     const userDataByMonth: UserDataByMonth = {};
     users.forEach(user => {
       const createdAt = new Date(user.createdAt);
       const monthYear = `${createdAt.getMonth() + 1}/${createdAt.getFullYear()}`;
       userDataByMonth[monthYear] = (userDataByMonth[monthYear] || 0) + 1;
     });
-
     const sortedKeys = Object.keys(userDataByMonth).sort((a, b) => {
       const [aMonth, aYear] = a.split('/').map(Number);
       const [bMonth, bYear] = b.split('/').map(Number);
       if (aYear === bYear) {
-          return aMonth - bMonth;
+        return aMonth - bMonth;
       } else {
-          return aYear - bYear;
+        return aYear - bYear;
       }
-  });
-
+    });
     return {
       labels: sortedKeys,
       datasets: [{
@@ -100,16 +94,13 @@ export class DashboardComponent {
     };
   }
 
-  processAddressData(address :any[]):any {
+  processAddressData(address: Address[]) {
     const addressDataByMonth: AddressDataByMonth = {};
     address.forEach(address => {
       const createdAt = new Date(address.createdAt);
       const monthYear = `${createdAt.getMonth() + 1}/${createdAt.getFullYear()}`;
       addressDataByMonth[monthYear] = (addressDataByMonth[monthYear] || 0) + 1;
     });
-
-    
-
     return {
       labels: Object.keys(addressDataByMonth),
       datasets: [{
@@ -123,6 +114,4 @@ export class DashboardComponent {
     this.getTotalUsers()
     this.getTotalAddress()
   }
-
-
 }
