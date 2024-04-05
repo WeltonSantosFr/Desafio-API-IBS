@@ -1,0 +1,9 @@
+.manage-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+.searchDiv {
+    display: flex;
+    justify-content: space-between;
+}

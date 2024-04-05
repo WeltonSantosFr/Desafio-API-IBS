@@ -1,0 +1,56 @@
+<p-dialog header="Confirmação de Exclusão" [(visible)]="confirmationDialogVisible" [modal]="true" [closable]="false">
+    <p>Tem certeza de que deseja excluir este usuário?</p>
+    <p-footer>
+        <p-button type="button" severity="danger" icon="pi pi-check" (click)="confirmDelete()" label="Sim"></p-button>
+        <p-button type="button" icon="pi pi-times" (click)="cancelDelete()" label="Não"></p-button>
+    </p-footer>
+</p-dialog>
+<div class="dashboard-container">
+    <div class="menu">
+        <p-tabMenu [model]="items" [activeItem]="activeItem"></p-tabMenu>
+    </div>
+    <div class="content">
+        <p-table #dt1 [value]="users" [paginator]="true" [rows]="20" [showCurrentPageReport]="true"
+            [tableStyle]="{ 'min-width': '50rem' }" [rowsPerPageOptions]="[10, 20, 50]"
+            [globalFilterFields]="['name', 'gender', 'maritalStatus']">
+            <ng-template pTemplate="caption">
+                <div class="searchDiv">
+                    <p-button type="button" icon="pi pi-plus" label="Criar Usuário" styleClass="p-button-text"
+                        (click)="createUser()"></p-button>
+                    <span class="p-input-icon-left ml-auto">
+                        <i class="pi pi-search"></i>
+                        <input type="text" ngModel pInputText
+                            (input)="dt1.filterGlobal($any($event.target).value , 'contains')"
+                            placeholder="Search keyword" />
+                    </span>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="name">Nome <p-sortIcon field="name"></p-sortIcon></th>
+                    <th pSortableColumn="gender">Gênero <p-sortIcon field="gender"></p-sortIcon></th>
+                    <th pSortableColumn="birthDate">Data de Nascimento <p-sortIcon field="birthDate"></p-sortIcon></th>
+                    <th pSortableColumn="maritalStatus">Estado Civil <p-sortIcon field="maritalStatus"></p-sortIcon>
+                    </th>
+                    <th>Gerenciar</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-users>
+                <tr>
+                    <td>{{ users.name }}</td>
+                    <td>{{ users.gender }}</td>
+                    <td>{{ formatDate(users.birthDate) }}</td>
+                    <td>{{ users.maritalStatus }}</td>
+                    <td class="manage-buttons">
+                        <p-button type="button" size="small" icon="pi pi-user-edit"
+                            (click)="editUser(users)"></p-button>
+                        <p-button type="button" size="small" icon="pi pi-trash" severity="danger"
+                            (click)="deleteUserConfirmation(users.id)"></p-button>
+                    </td>
+                </tr>
+            </ng-template>
+            
+
+        </p-table>
+    </div>
+</div>

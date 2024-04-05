@@ -1,0 +1,29 @@
+<form [formGroup]="createAddressForm" method="post">
+    <p-autoComplete [maxlength]="8" formControlName="cep" [suggestions]="filteredCeps"
+        (completeMethod)="filterCep($event)" (onSelect)="onSelectCep($event)" field="localidade"
+        placeholder="Cep"></p-autoComplete>
+    <p *ngIf="createAddressForm.get('cep')?.errors?.['required'] && (createAddressForm.get('cep')?.dirty || createAddressForm.get('cep')?.touched)"
+        [ngStyle]="{color: 'var(--red-600)'}">Cep é obrigatório</p>
+    <input type="text" name="address" formControlName="address" pInputText placeholder="Endereço" />
+    <p *ngIf="createAddressForm.get('address')?.errors?.['required'] && (createAddressForm.get('address')?.dirty || createAddressForm.get('address')?.touched)"
+        [ngStyle]="{color: 'var(--red-600)'}">Endereço é obrigatório</p>
+    <input type="text" name="number" formControlName="number" pInputText placeholder="Numero" />
+    <p *ngIf="createAddressForm.get('number')?.errors?.['required'] && (createAddressForm.get('number')?.dirty || createAddressForm.get('number')?.touched)"
+        [ngStyle]="{color: 'var(--red-600)'}">Numero é obrigatório</p>
+    <input type="text" name="complement" formControlName="complement" pInputText placeholder="Complemento" />
+    <input type="text" name="district" formControlName="district" pInputText placeholder="Bairro" />
+    <p *ngIf="createAddressForm.get('district')?.errors?.['required'] && (createAddressForm.get('district')?.dirty || createAddressForm.get('district')?.touched)"
+        [ngStyle]="{color: 'var(--red-600)'}">Bairro é obrigatório</p>
+    <input type="text" name="state" formControlName="state" pInputText placeholder="Estado" />
+    <p *ngIf="createAddressForm.get('state')?.errors?.['required'] && (createAddressForm.get('state')?.dirty || createAddressForm.get('state')?.touched)"
+        [ngStyle]="{color: 'var(--red-600)'}">Estado é obrigatório</p>
+    <input type="text" name="city" formControlName="city" pInputText placeholder="Cidade" />
+    <p *ngIf="createAddressForm.get('city')?.errors?.['required'] && (createAddressForm.get('city')?.dirty || createAddressForm.get('city')?.touched)"
+        [ngStyle]="{color: 'var(--red-600)'}">Cidade é obrigatório</p>
+    <p-dropdown formControlName="user" [options]="users" optionLabel="name" optionValue="id" [editable]="true"
+        [virtualScroll]="true" [virtualScrollItemSize]="38" placeholder="Usuário"></p-dropdown>
+    <p *ngIf="createAddressForm.get('user')?.errors?.['required'] && (createAddressForm.get('user')?.dirty || createAddressForm.get('user')?.touched)"
+        [ngStyle]="{color: 'var(--red-600)'}">Usuário é obrigatório</p>
+
+    <p-button label="Criar" (onClick)="onSubmit()"></p-button>
+</form>
